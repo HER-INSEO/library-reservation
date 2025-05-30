@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>도서관 좌석 예약 시스템</title>
+    <style>
+        .seats {
+            display: flex;
+            flex-wrap: wrap;
+            max-width: 400px;
+        }
+        .seat {
+            border: 2px solid #444;
+            border-radius: 8px;
+            width: 100px;
+            margin: 10px;
+            padding: 10px;
+            text-align: center;
+            background-color: #90ee90;
+        }
+        .seat.reserved {
+            background-color: #ff7f7f;
+        }
+        button {
+            margin: 5px 2px;
+            padding: 5px 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>📚 도서관 좌석 예약 시스템</h1>
+    <div class="seats" id="seat-container"></div>
+
+    <script>
+        // 초기 좌석 상태 (0: 빈자리, 1: 예약됨)
+        let seats = Array(12).fill(0);
+
+        // 페이지 로드 시 메시지 (예약 또는 취소)
+        let message = ""; // 여기 메시지 초기값 필요시 넣기
+        window.onload = function () {
+            if (message === "reserved") {
+                alert("✅ 예약이 완료되었습니다!");
+            } else if (message === "cancelled") {
+                alert("❎ 좌석이 취소되어 공석이 생겼습니다.");
+            }
+            renderSeats();
+        };
+
+        // 좌석 표시 및 버튼 상태 그리기
+        function renderSeats() {
+            const container = document.getElementById('seat-container');
+            container.innerHTML = "";  // 초기화
+
+            seats.forEach((seat, index) => {
+                const div = document.createElement('div');
+                div.className = 'seat' + (seat === 1 ? ' reserved' : '');
+                
+                // 좌석 번호
+                const p = document.createElement('p');
+                p.textContent = `좌석 ${index + 1}`;
+                div.appendChild(p);
+
+                // 예약 버튼
+                const reserveBtn = document.createElement('button');
+                reserveBtn.textContent = '예약';
+                reserveBtn.disabled = seat === 1;
+                reserveBtn.onclick = function () {
+                    if (seats[index] === 0) {
+                        seats[index] = 1;
+                        alert('✅ 예약이 완료되었습니다!');
+                        renderSeats();
+                    }
+                };
+                div.appendChild(reserveBtn);
+
+                // 취소 버튼
+                const cancelBtn = document.createElement('button');
+                cancelBtn.textContent = '취소';
+                cancelBtn.disabled = seat === 0;
+                cancelBtn.onclick = function () {
+                    if (seats[index] === 1) {
+                        seats[index] = 0;
+                        alert('❎ 좌석이 취소되어 공석이 생겼습니다.');
+                        renderSeats();
+                    }
+                };
+                div.appendChild(cancelBtn);
+
+                container.appendChild(div);
+            });
+        }
+    </script>
+</body>
+</html>
